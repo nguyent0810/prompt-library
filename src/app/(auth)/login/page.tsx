@@ -16,6 +16,7 @@ export default async function LoginPage() {
   const providers = await getEnabledAuthProviderIds();
   const hasCredentials = providers.includes("credentials");
   const hasOnlyCredentials = providers.length === 1 && hasCredentials;
+  const hasAnyProvider = providers.length > 0;
   const useCloneBranding = config.homepage?.useCloneBranding ?? false;
 
   return (
@@ -24,7 +25,11 @@ export default async function LoginPage() {
         <div className="text-center space-y-1">
           <h1 className="text-xl font-semibold">{t("login")}</h1>
           <p className="text-xs text-muted-foreground">
-            {hasOnlyCredentials ? t("loginDescription") : t("loginDescriptionOAuth")}
+            {hasAnyProvider
+              ? hasOnlyCredentials
+                ? t("loginDescription")
+                : t("loginDescriptionOAuth")
+              : "Login is temporarily unavailable until an OAuth provider is configured."}
           </p>
         </div>
         <div className="border rounded-lg p-4">

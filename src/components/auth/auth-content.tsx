@@ -24,9 +24,16 @@ export function AuthContent({ providers, mode, useCloneBranding = false }: AuthC
   const hasCredentials = providers.includes("credentials");
   const oauthProviders = providers.filter((p) => p !== "credentials");
   const hasGitHub = oauthProviders.includes("github");
+  const hasAnyProvider = providers.length > 0;
 
   return (
     <div className="space-y-3">
+      {!hasAnyProvider && (
+        <p className="text-xs text-muted-foreground text-center">
+          Login is not available yet. Configure at least one OAuth provider.
+        </p>
+      )}
+
       {/* OAuth providers */}
       {oauthProviders.length > 0 && (
         <div className="space-y-2">

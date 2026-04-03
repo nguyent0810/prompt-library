@@ -122,10 +122,6 @@ async function buildAuthConfig() {
     })
     .filter((p): p is NonNullable<typeof p> => p !== null);
 
-  if (authProviders.length === 0) {
-    throw new Error(`No valid auth plugins found. Configured: ${providerIds.join(", ")}`);
-  }
-
   return {
     adapter: CustomPrismaAdapter(),
     providers: authProviders,
