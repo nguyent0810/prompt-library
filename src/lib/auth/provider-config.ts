@@ -23,6 +23,6 @@ export async function getEnabledAuthProviderIds(): Promise<string[]> {
     return plugin.isConfigured();
   });
 
-  return enabled.length > 0 ? enabled : ["credentials"];
+  return enabled;
 }
 
