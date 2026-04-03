@@ -1,3 +1,5 @@
+import { expandedPiratePrompts } from "./pirate-prompts-expanded";
+
 export type PirateRarity = "common" | "rare" | "legendary";
 
 export type PirateCategoryId =
@@ -67,7 +69,7 @@ export const pirateTags: Array<{ id: PirateTagId; name: string; label: string }>
     { id: "constraints", name: "Constraints", label: "Constraints" },
   ];
 
-export const piratePrompts: PiratePrompt[] = [
+const basePiratePrompts: PiratePrompt[] = [
   {
     id: "socratic-tutor",
     title: "Socratic Tutor, Step by Step",
@@ -525,6 +527,11 @@ export const piratePrompts: PiratePrompt[] = [
     ].join("\n"),
     relatedIds: ["socratic-tutor", "compare-approaches"],
   },
+];
+
+export const piratePrompts: PiratePrompt[] = [
+  ...basePiratePrompts,
+  ...expandedPiratePrompts,
 ];
 
 export function getPiratePromptById(id: string): PiratePrompt | null {

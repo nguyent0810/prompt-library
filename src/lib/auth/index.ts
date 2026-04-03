@@ -5,6 +5,7 @@ import { isUniqueConstraintViolation } from "@/lib/db-errors";
 import { getConfig } from "@/lib/config";
 import { initializePlugins, getAuthPlugin } from "@/lib/plugins";
 import type { Adapter, AdapterUser } from "next-auth/adapters";
+import { getEnabledAuthProviderIds } from "@/lib/auth/provider-config";
 
 // Initialize plugins before use
 initializePlugins();
@@ -105,24 +106,10 @@ function CustomPrismaAdapter(): Adapter {
   };
 }
 
-// Helper to get providers from config (supports both old `provider` and new `providers` array)
-function getConfiguredProviders(config: Awaited<ReturnType<typeof getConfig>>): string[] {
-  // Support new `providers` array
-  if (config.auth.providers && config.auth.providers.length > 0) {
-    return config.auth.providers;
-  }
-  // Backward compatibility with old `provider` string
-  if (config.auth.provider) {
-    return [config.auth.provider];
-  }
-  // Default to credentials
-  return ["credentials"];
-}
-
 // Build auth config dynamically based on prompts.config.ts
 async function buildAuthConfig() {
   const config = await getConfig();
-  const providerIds = getConfiguredProviders(config);
+  const providerIds = await getEnabledAuthProviderIds();
   
   const authProviders = providerIds
     .map((id) => {

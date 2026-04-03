@@ -4,6 +4,8 @@ import type { AuthPlugin } from "../types";
 export const applePlugin: AuthPlugin = {
   id: "apple",
   name: "Apple",
+  isConfigured: () =>
+    Boolean(process.env.AUTH_APPLE_ID && process.env.AUTH_APPLE_SECRET),
   getProvider: () =>
     Apple({
       clientId: process.env.AUTH_APPLE_ID!,

@@ -3,27 +3,17 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { getConfig } from "@/lib/config";
 import { AuthContent } from "@/components/auth/auth-content";
+import { getEnabledAuthProviderIds } from "@/lib/auth/provider-config";
 
 export const metadata: Metadata = {
   title: "Login",
   description: "Login to your account",
 };
 
-// Helper to get providers from config (supports both old `provider` and new `providers` array)
-function getProviders(config: Awaited<ReturnType<typeof getConfig>>): string[] {
-  if (config.auth.providers && config.auth.providers.length > 0) {
-    return config.auth.providers;
-  }
-  if (config.auth.provider) {
-    return [config.auth.provider];
-  }
-  return ["credentials"];
-}
-
 export default async function LoginPage() {
   const t = await getTranslations("auth");
   const config = await getConfig();
-  const providers = getProviders(config);
+  const providers = await getEnabledAuthProviderIds();
   const hasCredentials = providers.includes("credentials");
   const hasOnlyCredentials = providers.length === 1 && hasCredentials;
   const useCloneBranding = config.homepage?.useCloneBranding ?? false;

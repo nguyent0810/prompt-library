@@ -4,6 +4,8 @@ import type { AuthPlugin } from "../types";
 export const githubPlugin: AuthPlugin = {
   id: "github",
   name: "GitHub",
+  isConfigured: () =>
+    Boolean(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET),
   getProvider: () =>
     GitHub({
       clientId: process.env.GITHUB_CLIENT_ID!,

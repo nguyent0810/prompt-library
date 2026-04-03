@@ -11,6 +11,10 @@ export interface AuthPlugin {
    * Returns the NextAuth provider configuration
    */
   getProvider: () => NextAuthConfig["providers"][number];
+  /**
+   * Optional runtime guard for required environment variables.
+   */
+  isConfigured?: () => boolean;
 }
 
 // ============================================

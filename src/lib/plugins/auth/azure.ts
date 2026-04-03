@@ -4,6 +4,10 @@ import type { AuthPlugin } from "../types";
 export const azurePlugin: AuthPlugin = {
   id: "azure",
   name: "Azure AD",
+  isConfigured: () =>
+    Boolean(
+      process.env.AZURE_AD_CLIENT_ID && process.env.AZURE_AD_CLIENT_SECRET
+    ),
   getProvider: () =>
     MicrosoftEntraID({
       clientId: process.env.AZURE_AD_CLIENT_ID!,
