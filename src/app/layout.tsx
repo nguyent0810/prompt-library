@@ -14,6 +14,8 @@ import { LocaleDetector } from "@/components/providers/locale-detector";
 import { getConfig } from "@/lib/config";
 import { isRtlLocale } from "@/lib/i18n/config";
 import "./globals.css";
+import { PirateHeader } from "@/components/pirate/pirate-header";
+import { PirateShell } from "@/components/pirate/pirate-shell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -153,6 +155,16 @@ export default async function RootLayout({
   const pathname = headersList.get("x-pathname") || headersList.get("x-invoke-path") || "";
   const isEmbedRoute = pathname.startsWith("/embed");
   const isKidsRoute = pathname.startsWith("/kids");
+  const isPirateRoute =
+    pathname === "/" ||
+    pathname.startsWith("/harbor") ||
+    pathname.startsWith("/archive") ||
+    pathname.startsWith("/scroll/") ||
+    pathname.startsWith("/variant/") ||
+    pathname.startsWith("/chest") ||
+    pathname.startsWith("/my-version") ||
+    pathname.startsWith("/arena") ||
+    pathname.startsWith("/captain");
   
   const locale = await getLocale();
   const messages = await getMessages();
@@ -197,13 +209,24 @@ export default async function RootLayout({
             children
           ) : (
             <>
-              <LocaleDetector />
-              <div className="relative min-h-screen flex flex-col">
-                <Header authProvider={config.auth.provider} allowRegistration={config.auth.allowRegistration} />
-                <main className="flex-1">{children}</main>
-                <Footer />
-                <CookieConsentBanner />
-              </div>
+              {isPirateRoute ? (
+                <PirateShell>
+                  <div className="relative min-h-screen flex flex-col">
+                    <LocaleDetector />
+                    <PirateHeader />
+                    <main className="flex-1">{children}</main>
+                    <CookieConsentBanner />
+                  </div>
+                </PirateShell>
+              ) : (
+                <div className="relative min-h-screen flex flex-col">
+                  <LocaleDetector />
+                  <Header authProvider={config.auth.provider} allowRegistration={config.auth.allowRegistration} />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                  <CookieConsentBanner />
+                </div>
+              )}
             </>
           )}
         </Providers>

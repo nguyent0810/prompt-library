@@ -48,8 +48,68 @@ model User {
   notificationsActed    Notification[]         @relation("NotificationActor")
   collections           Collection[]
   userPromptExamples    UserPromptExample[]
+  pirateChests          PirateChest[]
+  pirateVariants        PirateVariant[]
+  pirateInventoryState  PirateInventoryState?
 
   @@map("users")
+}
+
+model PirateChest {
+  id        String            @id @default(cuid())
+  name      String
+  isDefault Boolean           @default(false)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     PirateChestItem[]
+
+  @@index([userId])
+  @@index([userId, isDefault])
+  @@map("pirate_chests")
+}
+
+model PirateChestItem {
+  id        String   @id @default(cuid())
+  chestId   String
+  itemId    String
+  createdAt DateTime @default(now())
+  chest     PirateChest @relation(fields: [chestId], references: [id], onDelete: Cascade)
+
+  @@unique([chestId, itemId])
+  @@index([chestId])
+  @@index([itemId])
+  @@map("pirate_chest_items")
+}
+
+model PirateVariant {
+  id           String   @id @default(cuid())
+  basePromptId String
+  title        String
+  content      String
+  workingNote  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([basePromptId])
+  @@map("pirate_variants")
+}
+
+model PirateInventoryState {
+  userId                String   @id
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastActiveChestId     String?
+  equippedItemIds       Json?
+  recentlyViewedItemIds Json?
+  importedFromLocalAt   DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("pirate_inventory_states")
 }
 
 model Account {
